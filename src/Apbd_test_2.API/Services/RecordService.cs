@@ -1,5 +1,6 @@
 using Apbd_test_2.API.DAL;
 using Apbd_test_2.API.DTO;
+using Apbd_test_2.API.Exceptions;
 using Apbd_test_2.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,6 +86,17 @@ public class RecordService : IRecordService
     
     public async Task<GetRecordsDto> CreateRecordAsync(CreateRecordDto dto, CancellationToken cancellationToken)
     {
+        var language = await _context.Languages.FindAsync(new object[] { dto.LanguageId }, cancellationToken);
+        if (language == null)
+            throw new NotFoundException($"Language with ID {dto.LanguageId} not found.");
+
+        var student = await _context.Students.FindAsync(new object[] { dto.StudentId }, cancellationToken);
+        if (student == null)
+            throw new NotFoundException($"Student with ID {dto.StudentId} not found.");
+
+        var task = await _context.Tasks.FindAsync(new object[] { dto.TaskId }, cancellationToken);
+        if (task == null)
+            throw new NotFoundException($"Task with ID {dto.TaskId} not found.");
         var record = new Record
         {
             LanguageId = dto.LanguageId,
