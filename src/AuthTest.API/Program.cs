@@ -24,6 +24,9 @@ builder.Services.AddDbContext<AuthDbContext>(opt => opt.UseSqlServer(connectionS
 
 
 builder.Services.AddScoped<IAccountsService, AccountsService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 

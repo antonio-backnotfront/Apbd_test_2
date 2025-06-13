@@ -22,11 +22,11 @@ public class AccountsController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetAccounts>>> GetAllAccounts(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<GetAccountsDto>>> GetAllAccounts(CancellationToken cancellationToken)
     {
         try
         {
-            List<GetAccounts> accounts = await _service.GetAccountsAsync(cancellationToken);
+            List<GetAccountsDto> accounts = await _service.GetAccountsAsync(cancellationToken);
             return Ok(accounts);
         }
         catch (Exception e)
@@ -38,14 +38,14 @@ public class AccountsController : ControllerBase
     
     [Authorize(Roles = "Admin, User")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<IEnumerable<GetAccounts>>> GetAccountById(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<GetAccountsDto>>> GetAccountById(int id, CancellationToken cancellationToken)
     {
         var currentUsername = User.Identity.Name;
         var currentUserAccount = await _service.GetAccountByUsernameAsync(currentUsername, cancellationToken);
         if (currentUserAccount.Role != "Admin" && currentUserAccount.Id != id) return Forbid();
         try
         {
-            GetAccount? account = await _service.GetAccountByIdAsync(id, cancellationToken);
+            GetAccountDto? account = await _service.GetAccountByIdAsync(id, cancellationToken);
             return account != null ? Ok(account) : NotFound($"User with id {id} not found");
         }
         catch (Exception e)
@@ -57,7 +57,7 @@ public class AccountsController : ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<GetAccounts>>> CreateAccount(CreateAccountDto dto, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<GetAccountsDto>>> CreateAccount(CreateAccountDto dto, CancellationToken cancellationToken)
     {
         try
         {

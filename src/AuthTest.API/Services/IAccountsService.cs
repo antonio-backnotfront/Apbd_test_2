@@ -8,11 +8,10 @@ namespace AuthTest.API.Services;
 
 public interface IAccountsService
 {
-    public Task<List<GetAccounts>> GetAccountsAsync(CancellationToken cancellationToken);
-    public Task<GetAccount?> GetAccountByIdAsync(int id, CancellationToken cancellationToken);
+    public Task<List<GetAccountsDto>> GetAccountsAsync(CancellationToken cancellationToken);
+    public Task<GetAccountDto?> GetAccountByIdAsync(int id, CancellationToken cancellationToken);
     public Task<CreateAccountDto?> CreateAccount(CreateAccountDto dto, CancellationToken cancellationToken);
-    public Task<GetAccount?> GetAccountByUsernameAsync(string username, CancellationToken cancellationToken);
-    public Task<Account?> GetAccountEntityByUsername(string username, CancellationToken cancellationToken);
+    public Task<GetAccountDto?> GetAccountByUsernameAsync(string username, CancellationToken cancellationToken);
 
 
 }

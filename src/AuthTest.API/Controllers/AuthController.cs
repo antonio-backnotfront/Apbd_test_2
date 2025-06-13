@@ -14,16 +14,14 @@ namespace AuthTest.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ITokenService _tokenService;
-    private readonly PasswordHasher<Account> _passwordHasher;
     private readonly ILogger<AuthController> _logger;
-    private readonly IAccountsService _accountsService;
+    private readonly IAuthService _service;
 
-    public AuthController(IAccountsService accountsService, ITokenService tokenService, ILogger<AuthController> logger)
+    public AuthController(IAuthService service, ITokenService tokenService, ILogger<AuthController> logger)
     {
-        _accountsService = accountsService;
+        _service = service;
         _logger = logger;
         _tokenService = tokenService;
-        _passwordHasher = new PasswordHasher<Account>();
     }
 
     [HttpPost]
@@ -31,23 +29,16 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var foundUser = await _accountsService.GetAccountEntityByUsername(dto.Login, ct);
-            if (foundUser == null)
+            var userData = await _service.ValidateLoginByUsernameAndPassword(dto, ct); 
+            if (userData == null)
             {
-                _logger.LogError("The user wasn't found");
-                return Unauthorized();
-            }
-            
-            var verificationResult = _passwordHasher.VerifyHashedPassword(foundUser, foundUser.Password, dto.Password);
-            if (verificationResult == PasswordVerificationResult.Failed)
-            {
-                _logger.LogError("The user password is incorrect");
+                _logger.LogInformation("Invalid username or password");
                 return Unauthorized();
             }
 
             var tokens = new
             {
-                AccessToken = _tokenService.GenerateToken(foundUser.Username, foundUser.Role.Name)
+                AccessToken = _tokenService.GenerateToken(userData.Username, userData.Role)
             };
             return Ok(tokens);
         }

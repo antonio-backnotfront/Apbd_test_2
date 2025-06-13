@@ -19,10 +19,10 @@ public class AccountsService : IAccountsService
         _context = context;
     }
     
-    public async Task<List<GetAccounts>> GetAccountsAsync(CancellationToken cancellationToken)
+    public async Task<List<GetAccountsDto>> GetAccountsAsync(CancellationToken cancellationToken)
     {
         return await _context.Accounts
-            .Select(acc => new GetAccounts()
+            .Select(acc => new GetAccountsDto()
             {
                 Id = acc.Id,
                 Username = acc.Username
@@ -31,10 +31,10 @@ public class AccountsService : IAccountsService
             .ToListAsync(cancellationToken);
     }
     
-    public async Task<GetAccount?> GetAccountByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<GetAccountDto?> GetAccountByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await _context.Accounts
-            .Select(acc => new GetAccount()
+            .Select(acc => new GetAccountDto()
             {
                 Id = acc.Id,
                 Username = acc.Username,
@@ -43,10 +43,10 @@ public class AccountsService : IAccountsService
             .FirstOrDefaultAsync(acc => acc.Id == id, cancellationToken);
     }
     
-    public async Task<GetAccount?> GetAccountByUsernameAsync(string username, CancellationToken cancellationToken)
+    public async Task<GetAccountDto?> GetAccountByUsernameAsync(string username, CancellationToken cancellationToken)
     {
         return await _context.Accounts
-            .Select(acc => new GetAccount()
+            .Select(acc => new GetAccountDto()
             {
                 Id = acc.Id,
                 Username = acc.Username,
@@ -55,12 +55,7 @@ public class AccountsService : IAccountsService
             .FirstOrDefaultAsync(acc => acc.Username == username, cancellationToken);
     }
     
-    public async Task<Account?> GetAccountEntityByUsername(string username, CancellationToken cancellationToken)
-    {
-        return await _context.Accounts
-            .Include(acc => acc.Role)
-            .FirstOrDefaultAsync(acc => acc.Username == username, cancellationToken);
-    }
+   
     
     public async Task<CreateAccountDto?> CreateAccount(CreateAccountDto dto, CancellationToken cancellationToken)
     {
