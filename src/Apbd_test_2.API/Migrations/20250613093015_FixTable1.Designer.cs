@@ -4,6 +4,7 @@ using Apbd_test_2.API.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Apbd_test_2.API.Migrations
 {
     [DbContext(typeof(RecordDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250613093015_FixTable1")]
+    partial class FixTable1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +53,8 @@ namespace Apbd_test_2.API.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("ExecutionTime")
-                        .HasColumnType("float");
+                    b.Property<long>("ExecutionTime")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");

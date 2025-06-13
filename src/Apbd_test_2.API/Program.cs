@@ -1,5 +1,6 @@
 using System.Text;
 using Apbd_test_2.API.DAL;
+using Apbd_test_2.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,11 +19,12 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultDatabas
 builder.Services.AddDbContext<RecordDbContext>(opt => opt.UseSqlServer(connectionString));
 
 
-// builder.Services.AddScoped<IAccountsService, AccountsService>();
-// builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<IRecordService, RecordService>();
 
 
-// builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 builder.Services.AddControllers().AddJsonOptions(options =>

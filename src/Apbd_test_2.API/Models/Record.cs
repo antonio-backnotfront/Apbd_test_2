@@ -12,7 +12,9 @@ public class Record
     
     public string Name { get; set; }
     
-    public long ExecutionTime { get; set; }
+    public double ExecutionTime { get; set; }
+    
+    public DateTime CreateAt { get; set; }
     
     public int LanguageId { get; set; }
     [ForeignKey(nameof(LanguageId))]
