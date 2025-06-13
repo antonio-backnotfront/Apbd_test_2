@@ -1,4 +1,4 @@
-namespace ApbdTest2.API.DTO;
+namespace Apbd_test_2.API.DTO;
 
 public class GetAccountDto
 {
