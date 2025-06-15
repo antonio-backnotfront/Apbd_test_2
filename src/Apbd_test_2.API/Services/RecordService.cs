@@ -6,6 +6,7 @@ using Apbd_test_2.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.Server;
+using Task = Apbd_test_2.API.Models.Task;
 
 namespace Apbd_test_2.API.Services;
 
@@ -58,7 +59,7 @@ public class RecordService : IRecordService
 
     public async Task<List<GetRecordsDto>> GetRecordsAsync(string? date, int? languageId, int? taskId, CancellationToken cancellationToken)
     {
-        string format = "dd/MM/yyyy";
+        string format = "dd/MM/yyyy hh:mm:ss";
         
         var query =  _context.Records
             .OrderByDescending(r => r.CreatedAt)
@@ -71,8 +72,7 @@ public class RecordService : IRecordService
         if (!date.IsNullOrEmpty())
         {
             DateTime parseDate;
-            if (!DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parseDate)) throw new ArgumentException($"Invalid date: {date}. The correct date format is {format}");
-            // Console.WriteLine($"{date.ToString(format, CultureInfo.InvariantCulture)}");
+            if (!DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out parseDate)) throw new ArgumentException($"Invalid date: {date}. The correct date format is {format}");
             
             query = query.Where(rec => rec.CreatedAt.Year == parseDate.Year && rec.CreatedAt.Month == parseDate.Month && rec.CreatedAt.Day == parseDate.Day);
         }
@@ -122,7 +122,6 @@ public class RecordService : IRecordService
             throw new ArgumentException($"Not a valid date, field 'created' should be in the following format {format}");
         }
         Console.WriteLine($"{parsedDate}");
-        
         var language = await _context.Languages.FindAsync(new object[] { dto.LanguageId }, cancellationToken);
         if (language == null)
             throw new NotFoundException($"Language with ID {dto.LanguageId} not found.");
@@ -132,7 +131,21 @@ public class RecordService : IRecordService
         
         var task = await _context.Tasks.FindAsync(new object[] { dto.TaskId }, cancellationToken);
         if (task == null)
-            throw new NotFoundException($"Task with ID {dto.TaskId} not found.");
+        {
+            if (dto.Task == null)
+            {
+                throw new NotFoundException($"Task with ID {dto.TaskId} not found.");
+            }
+
+            Task newTask = new Task()
+            {
+                Name = dto.Task.Name,
+                Description = dto.Task.Description,
+            };
+            await _context.Tasks.AddAsync(newTask, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+        }
         var record = new Record
         {
             LanguageId = dto.LanguageId,
