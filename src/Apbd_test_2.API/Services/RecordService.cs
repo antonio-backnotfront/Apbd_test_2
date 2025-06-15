@@ -57,11 +57,12 @@ public class RecordService : IRecordService
     }
 
 
-    public async Task<List<GetRecordsDto>> GetRecordsAsync(string? date, int? languageId, int? taskId, CancellationToken cancellationToken)
+    public async Task<List<GetRecordsDto>> GetRecordsAsync(string? date, int? languageId, int? taskId,
+        CancellationToken cancellationToken)
     {
         string format = "dd/MM/yyyy hh:mm:ss";
-        
-        var query =  _context.Records
+
+        var query = _context.Records
             .OrderByDescending(r => r.CreatedAt)
             .ThenBy(r => r.Student.LastName)
             .Include(r => r.Language)
@@ -72,18 +73,29 @@ public class RecordService : IRecordService
         if (!date.IsNullOrEmpty())
         {
             DateTime parseDate;
-            if (!DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out parseDate)) throw new ArgumentException($"Invalid date: {date}. The correct date format is {format}");
-            
-            query = query.Where(rec => rec.CreatedAt.Year == parseDate.Year && rec.CreatedAt.Month == parseDate.Month && rec.CreatedAt.Day == parseDate.Day);
+            if (!DateTime.TryParseExact(
+                    date,
+                    "dd/MM/yyyy",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out parseDate))
+                throw new ArgumentException($"Invalid date: {date}. The correct date format is {format}");
+
+            query = query.Where(rec =>
+                rec.CreatedAt.Year == parseDate.Year && rec.CreatedAt.Month == parseDate.Month &&
+                rec.CreatedAt.Day == parseDate.Day);
         }
+
         if (languageId.HasValue)
         {
             query = query.Where(rec => rec.LanguageId == languageId);
         }
+
         if (taskId.HasValue)
         {
             query = query.Where(rec => rec.TaskId == taskId);
         }
+
         return await query
             .Select(rec => new GetRecordsDto
             {
@@ -111,7 +123,7 @@ public class RecordService : IRecordService
             })
             .ToListAsync(cancellationToken);
     }
-    
+
     public async Task<GetRecordsDto> CreateRecordAsync(CreateRecordDto dto, CancellationToken cancellationToken)
     {
         string format = "dd/MM/yyyy HH:mm:ss";
@@ -119,8 +131,10 @@ public class RecordService : IRecordService
         if (!DateTime.TryParseExact(dto.Created, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
                 out parsedDate))
         {
-            throw new ArgumentException($"Not a valid date, field 'created' should be in the following format {format}");
+            throw new ArgumentException(
+                $"Not a valid date, field 'created' should be in the following format {format}");
         }
+
         Console.WriteLine($"{parsedDate}");
         var language = await _context.Languages.FindAsync(new object[] { dto.LanguageId }, cancellationToken);
         if (language == null)
@@ -128,7 +142,7 @@ public class RecordService : IRecordService
         var student = await _context.Students.FindAsync(new object[] { dto.StudentId }, cancellationToken);
         if (student == null)
             throw new NotFoundException($"Student with ID {dto.StudentId} not found.");
-        
+
         var task = await _context.Tasks.FindAsync(new object[] { dto.TaskId }, cancellationToken);
         if (task == null)
         {
@@ -144,8 +158,8 @@ public class RecordService : IRecordService
             };
             await _context.Tasks.AddAsync(newTask, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-
         }
+
         var record = new Record
         {
             LanguageId = dto.LanguageId,
@@ -160,7 +174,6 @@ public class RecordService : IRecordService
 
         return new GetRecordsDto
         {
-            
             Id = record.Id,
             Language = new GetLanguageDto
             {
@@ -184,6 +197,4 @@ public class RecordService : IRecordService
             Created = record.CreatedAt.ToString(format, CultureInfo.InvariantCulture),
         };
     }
-
-
 }
