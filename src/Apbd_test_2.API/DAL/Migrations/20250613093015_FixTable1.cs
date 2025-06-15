@@ -12,7 +12,7 @@ namespace Apbd_test_2.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreateAt",
+                name: "CreatedAt",
                 table: "Record",
                 type: "datetime2",
                 nullable: false,
@@ -23,7 +23,7 @@ namespace Apbd_test_2.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "CreateAt",
+                name: "CreatedAt",
                 table: "Record");
         }
     }

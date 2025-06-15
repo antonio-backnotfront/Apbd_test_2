@@ -10,11 +10,9 @@ public class Record
     [Key]
     public int Id { get; set; }
     
-    public string Name { get; set; }
+    public long ExecutionTime { get; set; }
     
-    public double ExecutionTime { get; set; }
-    
-    public DateTime CreateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
     
     public int LanguageId { get; set; }
     [ForeignKey(nameof(LanguageId))]
@@ -27,10 +25,4 @@ public class Record
     public int TaskId { get; set; }
     [ForeignKey(nameof(TaskId))]
     public Task Task { get; set; }
-    
-    
-    
-    
-    // public DbSet<>
-
 }

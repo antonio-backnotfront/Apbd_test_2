@@ -61,6 +61,10 @@ public class RecordManiaController : ControllerBase
             var created = await _recordService.CreateRecordAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetRecordById), new { id = created.Id }, created);
         }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
         catch (NotFoundException ex)
         {
             return BadRequest(ex.Message);

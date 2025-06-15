@@ -5,6 +5,6 @@ public class CreateRecordDto
     public int LanguageId { get; set; }
     public int TaskId { get; set; }
     public int StudentId { get; set; }
-    public double ExecutionTime { get; set; }
-    public DateTime Created { get; set; }
+    public long ExecutionTime { get; set; }
+    public string Created { get; set; }
 }

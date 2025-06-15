@@ -9,5 +9,5 @@ public class GetRecordsDto
     public GetTaskDto Task { get; set; }
     public GetStudentDto Student { get; set; }
     public double ExecutionTime { get; set; }
-    public DateTime Created;
+    public DateTime Created { get; set; }
 }

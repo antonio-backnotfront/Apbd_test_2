@@ -4,6 +4,7 @@ using Apbd_test_2.API.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Apbd_test_2.API.Migrations
 {
     [DbContext(typeof(RecordDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250615170835_updateDatabase")]
+    partial class updateDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,6 +76,10 @@ namespace Apbd_test_2.API.Migrations
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
@@ -96,6 +103,7 @@ namespace Apbd_test_2.API.Migrations
                             CreatedAt = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExecutionTime = 11L,
                             LanguageId = 1,
+                            Name = "record 1",
                             StudentId = 1,
                             TaskId = 1
                         },
@@ -105,6 +113,7 @@ namespace Apbd_test_2.API.Migrations
                             CreatedAt = new DateTime(2019, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExecutionTime = 16L,
                             LanguageId = 2,
+                            Name = "record 2",
                             StudentId = 1,
                             TaskId = 2
                         });

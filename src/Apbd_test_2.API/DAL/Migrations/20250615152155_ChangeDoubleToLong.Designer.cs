@@ -4,6 +4,7 @@ using Apbd_test_2.API.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Apbd_test_2.API.Migrations
 {
     [DbContext(typeof(RecordDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250615152155_ChangeDoubleToLong")]
+    partial class ChangeDoubleToLong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,23 +40,6 @@ namespace Apbd_test_2.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Language");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "C++"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Java"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "C#"
-                        });
                 });
 
             modelBuilder.Entity("Apbd_test_2.API.Models.Record", b =>
@@ -64,7 +50,7 @@ namespace Apbd_test_2.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
                     b.Property<long>("ExecutionTime")
@@ -72,6 +58,10 @@ namespace Apbd_test_2.API.Migrations
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -88,26 +78,6 @@ namespace Apbd_test_2.API.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("Record");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExecutionTime = 11L,
-                            LanguageId = 1,
-                            StudentId = 1,
-                            TaskId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2019, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExecutionTime = 16L,
-                            LanguageId = 2,
-                            StudentId = 1,
-                            TaskId = 2
-                        });
                 });
 
             modelBuilder.Entity("Apbd_test_2.API.Models.Student", b =>
@@ -133,29 +103,6 @@ namespace Apbd_test_2.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Student");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "john.doe@gmail.com",
-                            FirstName = "John",
-                            LastName = "Doe"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "jane.doe@gmail.com",
-                            FirstName = "Jane",
-                            LastName = "Doe"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "marta.doe@gmail.com",
-                            FirstName = "Marta",
-                            LastName = "Doe"
-                        });
                 });
 
             modelBuilder.Entity("Apbd_test_2.API.Models.Task", b =>
@@ -177,26 +124,6 @@ namespace Apbd_test_2.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Task");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Test preparation",
-                            Name = "Test"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Exam preapration",
-                            Name = "Exam"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Review preparation",
-                            Name = "Review"
-                        });
                 });
 
             modelBuilder.Entity("Apbd_test_2.API.Models.Record", b =>
