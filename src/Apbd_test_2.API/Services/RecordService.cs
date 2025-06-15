@@ -50,15 +50,17 @@ public class RecordService : IRecordService
                 Email = record.Student.Email,
             },
             ExecutionTime = record.ExecutionTime,
-            Created = record.CreatedAt,
+            Created = record.CreatedAt.ToString(),
         };
     }
 
 
     public async Task<List<GetRecordsDto>> GetRecordsAsync(CancellationToken cancellationToken)
     {
+        string format = "dd/MM/yyyy HH:mm:ss";
+        
         return await _context.Records
-            .OrderBy(r => r.CreatedAt)
+            .OrderByDescending(r => r.CreatedAt)
             .Include(r => r.Language)
             .Include(r => r.Task)
             .Include(r => r.Student)
@@ -84,7 +86,7 @@ public class RecordService : IRecordService
                     Email = rec.Student.Email,
                 },
                 ExecutionTime = rec.ExecutionTime,
-                Created = rec.CreatedAt,
+                Created = rec.CreatedAt.ToString(format, CultureInfo.InvariantCulture),
             }).ToListAsync(cancellationToken);
     }
     
@@ -144,7 +146,7 @@ public class RecordService : IRecordService
                 Email = record.Student.Email
             },
             ExecutionTime = record.ExecutionTime,
-            Created = record.CreatedAt,
+            Created = record.CreatedAt.ToString(format, CultureInfo.InvariantCulture),
         };
     }
 
