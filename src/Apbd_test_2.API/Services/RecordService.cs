@@ -4,6 +4,7 @@ using Apbd_test_2.API.DTO;
 using Apbd_test_2.API.Exceptions;
 using Apbd_test_2.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.Server;
 
 namespace Apbd_test_2.API.Services;
@@ -55,15 +56,35 @@ public class RecordService : IRecordService
     }
 
 
-    public async Task<List<GetRecordsDto>> GetRecordsAsync(CancellationToken cancellationToken)
+    public async Task<List<GetRecordsDto>> GetRecordsAsync(string? date, int? languageId, int? taskId, CancellationToken cancellationToken)
     {
-        string format = "dd/MM/yyyy HH:mm:ss";
+        string format = "dd/MM/yyyy";
         
-        return await _context.Records
+        var query =  _context.Records
             .OrderByDescending(r => r.CreatedAt)
+            .ThenBy(r => r.Student.LastName)
             .Include(r => r.Language)
             .Include(r => r.Task)
             .Include(r => r.Student)
+            .AsQueryable();
+
+        if (!date.IsNullOrEmpty())
+        {
+            DateTime parseDate;
+            if (!DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parseDate)) throw new ArgumentException($"Invalid date: {date}. The correct date format is {format}");
+            // Console.WriteLine($"{date.ToString(format, CultureInfo.InvariantCulture)}");
+            
+            query = query.Where(rec => rec.CreatedAt.Year == parseDate.Year && rec.CreatedAt.Month == parseDate.Month && rec.CreatedAt.Day == parseDate.Day);
+        }
+        if (languageId.HasValue)
+        {
+            query = query.Where(rec => rec.LanguageId == languageId);
+        }
+        if (taskId.HasValue)
+        {
+            query = query.Where(rec => rec.TaskId == taskId);
+        }
+        return await query
             .Select(rec => new GetRecordsDto
             {
                 Id = rec.Id,
@@ -87,7 +108,8 @@ public class RecordService : IRecordService
                 },
                 ExecutionTime = rec.ExecutionTime,
                 Created = rec.CreatedAt.ToString(format, CultureInfo.InvariantCulture),
-            }).ToListAsync(cancellationToken);
+            })
+            .ToListAsync(cancellationToken);
     }
     
     public async Task<GetRecordsDto> CreateRecordAsync(CreateRecordDto dto, CancellationToken cancellationToken)

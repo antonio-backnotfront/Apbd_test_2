@@ -25,11 +25,15 @@ public class RecordManiaController : ControllerBase
     }
 
     [HttpGet("records")]
-    public async Task<ActionResult<IEnumerable<GetRecordsDto>>> GetRecords(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<GetRecordsDto>>> GetRecords([FromQuery(Name = "date")] string? date, [FromQuery(Name = "languageId")] int? languageId, [FromQuery(Name = "taskId")] int? taskId, CancellationToken cancellationToken)
     {
         try
         {
-            return await _recordService.GetRecordsAsync(cancellationToken);
+            return await _recordService.GetRecordsAsync(date, languageId, taskId, cancellationToken);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
